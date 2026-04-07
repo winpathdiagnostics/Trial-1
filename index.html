@@ -147,11 +147,11 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimize for high-DPI displays
         container.appendChild(renderer.domElement);
 
-        // 2. Lighting - "Clean white and teal lighting"
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        // 2. Lighting - Enhanced for biological materials
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
         scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
         directionalLight.position.set(5, 10, 5);
         scene.add(directionalLight);
 
@@ -165,21 +165,55 @@
         const ringGroup = new THREE.Group();
         scene.add(ringGroup);
 
-        // A Torus geometry flattened on the Z axis perfectly mimics a biconcave Red Blood Cell
-        const rbcGeometry = new THREE.TorusGeometry(0.8, 0.45, 16, 64);
-        const rbcMaterial = new THREE.MeshStandardMaterial({ 
-            color: 0x990000, 
+        // --- REALISTIC RED BLOOD CELL (Procedural Biconcave Disc) ---
+        const rbcGeometry = new THREE.SphereGeometry(0.8, 64, 64);
+        const rbcPositions = rbcGeometry.attributes.position;
+        for (let i = 0; i < rbcPositions.count; i++) {
+            const x = rbcPositions.getX(i);
+            const y = rbcPositions.getY(i);
+            let z = rbcPositions.getZ(i);
+            
+            // Calculate distance from center to create the dimple effect
+            const dist = Math.sqrt(x * x + y * y);
+            const normalizedDist = dist / 0.8;
+            
+            // Biconcave formula: thin in the middle, thicker at the edges
+            const thickness = 0.25 + 0.75 * Math.pow(normalizedDist, 2.5);
+            z *= thickness * 0.45; // Squash the Z axis based on thickness
+            
+            rbcPositions.setZ(i, z);
+        }
+        rbcGeometry.computeVertexNormals(); // Recalculate light reflections for the new shape
+
+        const rbcMaterial = new THREE.MeshPhysicalMaterial({ 
+            color: 0x8a0303, // Deep crimson red
             roughness: 0.3,
-            metalness: 0.1
+            metalness: 0.1,
+            clearcoat: 0.6, // Gives a wet, fleshy biological shine
+            clearcoatRoughness: 0.2
         });
 
-        // Icosahedrons for White Blood Cells
-        const wbcGeometry = new THREE.IcosahedronGeometry(1.2, 2);
-        const wbcMaterial = new THREE.MeshStandardMaterial({
-            color: 0xddddff,
-            roughness: 0.8,
-            metalness: 0.1,
-            emissive: 0x111133
+        // --- REALISTIC WHITE BLOOD CELL (Organic bumpy surface & translucent) ---
+        const wbcGeometry = new THREE.SphereGeometry(1.2, 64, 64);
+        const wbcPositions = wbcGeometry.attributes.position;
+        const v3 = new THREE.Vector3();
+        for (let i = 0; i < wbcPositions.count; i++) {
+            v3.fromBufferAttribute(wbcPositions, i);
+            // Apply organic bumps using interacting sine waves
+            const bump = 1 + 0.06 * Math.sin(v3.x * 12) * Math.sin(v3.y * 12) * Math.sin(v3.z * 12);
+            v3.multiplyScalar(bump);
+            wbcPositions.setXYZ(i, v3.x, v3.y, v3.z);
+        }
+        wbcGeometry.computeVertexNormals();
+
+        const wbcMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0xeef2ff, // Milky white/blue
+            roughness: 0.7,
+            metalness: 0.0,
+            transmission: 0.5, // Semi-transparent/milky interior
+            thickness: 1.5,
+            ior: 1.4,
+            emissive: 0x111122 // Slight internal glow
         });
 
         // Generate 500 cells scattered in a long "tunnel" along the Z axis
@@ -187,10 +221,6 @@
             const isWBC = Math.random() > 0.96; // 4% White Blood Cells
             const mesh = new THREE.Mesh(isWBC ? wbcGeometry : rbcGeometry, isWBC ? wbcMaterial : rbcMaterial);
             
-            if(!isWBC) {
-                mesh.scale.set(1, 1, 0.4); // Flatten the Torus to make it look like an RBC
-            }
-
             // Scatter them in a cylinder-like distribution
             const radius = 2 + Math.random() * 15;
             const theta = Math.random() * Math.PI * 2;
