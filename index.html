@@ -11,22 +11,22 @@
     
     <style>
         /* Base styles for a clean, immersive experience */
-        body {
-            margin: 0;
-            overflow-x: hidden;
+        body { 
+            margin: 0; 
+            overflow-x: hidden; 
             background-color: #03080e; /* Deep clinical dark background */
-            color: white;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: white; 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
         }
         
         /* The container for our 3D canvas must stay fixed behind the content */
-        #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
+        #canvas-container { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            z-index: -1; 
         }
 
         /* Scrollable content areas */
@@ -36,45 +36,45 @@
         }
 
         /* Each narrative section */
-        .section {
+        .section { 
             height: 150vh; /* Extra height to allow for smooth scrolling between scenes */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 0 10%;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            padding: 0 10%; 
             pointer-events: none; /* Let clicks pass through to canvas if needed */
         }
 
-        .text-box {
-            max-width: 650px;
-            background: rgba(3, 8, 14, 0.85);
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            border-left: 4px solid #00f0ff;
+        .text-box { 
+            max-width: 650px; 
+            background: rgba(3, 8, 14, 0.6); 
+            padding: 2.5rem; 
+            border-radius: 1.5rem; 
+            border-left: 4px solid #00f0ff; 
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            opacity: 0;
+            opacity: 0; 
             transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); 
             pointer-events: auto; /* Re-enable clicks on text box */
-            box-shadow: 0 20px 40px rgba(0, 240, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
-        .text-box.visible {
-            opacity: 1;
+        .text-box.visible { 
+            opacity: 1; 
             transform: translateY(0);
         }
 
-        h1, h2 {
-            font-weight: 300;
-            letter-spacing: -0.03em;
+        h1, h2 { 
+            font-weight: 300; 
+            letter-spacing: -0.03em; 
             line-height: 1.1;
         }
         
-        .teal-text {
-            color: #00f0ff;
+        .teal-text { 
+            color: #00f0ff; 
             font-weight: 500;
-            text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
         }
 
         .subtitle {
@@ -99,7 +99,7 @@
         <div class="section">
             <div class="text-box" id="box-1">
                 <span class="subtitle">Phase 01 &mdash; Collection</span>
-                <h1 class="text-5xl md:text-7xl mb-6">Purity from the <span class="teal-text">Start</span></h1>
+                <h1 class="text-5xl md:text-7xl mb-6">Purity from the <br/><span class="teal-text">First Drop</span></h1>
                 <p class="text-xl text-gray-300 leading-relaxed">
                     A hyper-realistic journey beginning with sterile collection. We ensure the absolute integrity of your sample before it ever touches our state-of-the-art diagnostic pipeline.
                 </p>
@@ -110,9 +110,9 @@
         <div class="section">
             <div class="text-box md:ml-auto" id="box-2">
                 <span class="subtitle">Phase 02 &mdash; Processing</span>
-                <h2 class="text-5xl md:text-6xl mb-6">Digital <span class="teal-text">Precision</span></h2>
+                <h2 class="text-5xl md:text-6xl mb-6">Digital <br/><span class="teal-text">Analysis</span></h2>
                 <p class="text-xl text-gray-300 leading-relaxed">
-                    Entering the glowing intake of our futuristic hematology analyzer. Millions of cells are individually isolated, digitally scanned, and identified using AI-driven precision algorithms.
+                    Entering the glowing intake of our futuristic hematology analyzer. Millions of cells are individually isolated, digitally scanned, and identified using AI-driven precision algorithms in milliseconds.
                 </p>
             </div>
         </div>
@@ -121,9 +121,9 @@
         <div class="section">
             <div class="text-box" id="box-3">
                 <span class="subtitle">Phase 03 &mdash; Pathology</span>
-                <h2 class="text-5xl md:text-6xl mb-6">Microscopic <span class="teal-text">Insight</span></h2>
+                <h2 class="text-5xl md:text-6xl mb-6">Microscopic <br/><span class="teal-text">Visualization</span></h2>
                 <p class="text-xl text-gray-300 leading-relaxed">
-                    Transitioning to a high-definition peripheral smear. Our expert pathologists review crystal-clear cellular topographies, combining machine efficiency with human expertise for unparalleled accuracy.
+                    Transitioning to a high-definition peripheral smear. Our expert pathologists review crystal-clear cellular topographies, combining machine efficiency with human expertise for flawless biochemistry and microbiology results.
                 </p>
             </div>
         </div>
@@ -138,26 +138,26 @@
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
         // Add a deep background fog to give the illusion of depth in fluid
-        scene.fog = new THREE.FogExp2(0x03080e, 0.08);
+        scene.fog = new THREE.FogExp2(0x03080e, 0.012);
 
         // Set up Camera and Renderer
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimize for high-DPI displays
         container.appendChild(renderer.domElement);
 
         // 2. Lighting - "Clean white and teal lighting"
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambientLight);
 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(5, 10, 7);
+        directionalLight.position.set(5, 10, 5);
         scene.add(directionalLight);
 
         // Glowing teal point light representing the analyzer laser/scanner
-        const tealLight = new THREE.PointLight(0x00f0ff, 1, 100);
-        tealLight.position.set(0, 0, 10);
+        const tealLight = new THREE.PointLight(0x00f0ff, 3, 100);
+        tealLight.position.set(0, 0, -100);
         scene.add(tealLight);
 
         // 3. Create the 3D Objects (Cells and Environment)
@@ -166,15 +166,15 @@
         scene.add(ringGroup);
 
         // A Torus geometry flattened on the Z axis perfectly mimics a biconcave Red Blood Cell
-        const rbcGeometry = new THREE.TorusGeometry(1, 0.4, 8, 100);
-        const rbcMaterial = new THREE.MeshStandardMaterial({
-            color: 0x990000,
+        const rbcGeometry = new THREE.TorusGeometry(0.8, 0.45, 16, 64);
+        const rbcMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x990000, 
             roughness: 0.3,
             metalness: 0.1
         });
 
         // Icosahedrons for White Blood Cells
-        const wbcGeometry = new THREE.IcosahedronGeometry(0.6, 4);
+        const wbcGeometry = new THREE.IcosahedronGeometry(1.2, 2);
         const wbcMaterial = new THREE.MeshStandardMaterial({
             color: 0xddddff,
             roughness: 0.8,
@@ -183,21 +183,21 @@
         });
 
         // Generate 500 cells scattered in a long "tunnel" along the Z axis
-        for (let i = 0; i < 500; i++) {
-            const isWBC = Math.random() > 0.9;
+        for(let i = 0; i < 500; i++) {
+            const isWBC = Math.random() > 0.96; // 4% White Blood Cells
             const mesh = new THREE.Mesh(isWBC ? wbcGeometry : rbcGeometry, isWBC ? wbcMaterial : rbcMaterial);
             
-            if (!isWBC) {
-                mesh.scale.set(1, 1, 0.3);
+            if(!isWBC) {
+                mesh.scale.set(1, 1, 0.4); // Flatten the Torus to make it look like an RBC
             }
 
             // Scatter them in a cylinder-like distribution
-            const radius = 2 + Math.random() * 3;
+            const radius = 2 + Math.random() * 15;
             const theta = Math.random() * Math.PI * 2;
             
             mesh.position.x = radius * Math.cos(theta);
             mesh.position.y = radius * Math.sin(theta);
-            mesh.position.z = (Math.random() - 0.5) * 300;
+            mesh.position.z = (Math.random() - 1) * 300; // Spread deeply along negative Z
 
             mesh.rotation.x = Math.random() * Math.PI;
             mesh.rotation.y = Math.random() * Math.PI;
@@ -207,7 +207,8 @@
                 rx: (Math.random() - 0.5) * 0.01,
                 ry: (Math.random() - 0.5) * 0.01,
                 rz: (Math.random() - 0.5) * 0.01,
-                speedZ: (Math.random() * 0.5 + 0.2)
+                // Reduced speedZ drastically so scroll is the main driver
+                speedZ: (Math.random() * 0.01) 
             };
 
             scene.add(mesh);
@@ -215,17 +216,17 @@
         }
 
         // Create the "Glowing Intake" of the Hematology Analyzer
-        const ringGeometry = new THREE.TorusGeometry(4, 0.3, 32, 100);
-        const ringMaterial = new THREE.MeshBasicMaterial({
-            color: 0x00f0ff,
-            transparent: true,
-            opacity: 0.7
+        const ringGeometry = new THREE.TorusGeometry(12, 0.15, 16, 100);
+        const ringMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0x00f0ff, 
+            transparent: true, 
+            opacity: 0.7 
         });
 
-        for (let i = 0; i < 8; i++) {
+        for(let i = 0; i < 6; i++) {
             const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-            ring.position.set(0, 0, -50 + i * 5);
-            ring.scale.set(1 - (i * 0.05), 1 - (i * 0.05), 1);
+            ring.position.set(0, 0, -100 - (i * 8));
+            ring.scale.set(1 - (i*0.05), 1 - (i*0.05), 1);
             ringGroup.add(ring);
         }
 
@@ -235,6 +236,9 @@
         // 4. Scroll & Animation Logic
         let scrollY = 0;
         let targetZ = 15;
+        
+        // Add clock to handle high refresh rate monitors properly
+        const clock = new THREE.Clock();
         
         window.addEventListener('scroll', () => {
             scrollY = window.scrollY;
@@ -254,39 +258,49 @@
         function animate() {
             requestAnimationFrame(animate);
 
+            // Get delta time to ensure consistent speed across 60Hz and 144Hz monitors
+            const delta = clock.getDelta();
+            const timeScale = Math.min(delta * 60, 2); // Normalize to 60fps baseline
+
             // Calculate scroll percentage (0 to 1)
-            const maxScroll = document.body.scrollHeight - window.innerHeight;
-            const scrollPercent = maxScroll > 0 ? scrollY / maxScroll : 0;
+            const maxScroll = Math.max(1, document.body.scrollHeight - window.innerHeight);
+            const scrollPercent = scrollY / maxScroll;
 
-            // Smooth camera movement (Parallax mapping)
-            // As user scrolls, camera moves deep into the Z axis towards the analyzer
-            targetZ = 15 - (scrollPercent * 60);
-            camera.position.z += (targetZ - camera.position.z) * 0.05;
+            // Smooth camera movement driven purely by scroll
+            targetZ = 15 - (scrollPercent * 250);
+            
+            // Snappier camera lerp (increased from 0.05 to 0.1) multiplied by timeScale
+            camera.position.z += (targetZ - camera.position.z) * 0.1 * timeScale; 
 
-            // Rotate camera slightly based on scroll to simulate microscope adjustment
-            camera.rotation.z = scrollPercent * Math.PI * 0.1;
+            // Rotate camera slightly based on scroll
+            camera.rotation.z = scrollPercent * Math.PI * 0.25;
 
             // Organic animation for cells
             cells.forEach(cell => {
-                cell.rotation.x += cell.userData.rx;
-                cell.rotation.y += cell.userData.ry;
-                cell.rotation.z += cell.userData.rz;
+                // Slower, consistent rotation
+                cell.rotation.x += cell.userData.rx * timeScale;
+                cell.rotation.y += cell.userData.ry * timeScale;
+                cell.rotation.z += cell.userData.rz * timeScale;
                 
-                // Slowly drift cells forward towards camera
-                cell.position.z += cell.userData.speedZ;
-                if (cell.position.z > camera.position.z + 50) {
-                    cell.position.z -= 300; // Recycle cell to back
+                // Very slow drift, mostly suspended in space
+                cell.position.z += cell.userData.speedZ * timeScale;
+                
+                // Bi-directional looping
+                if(cell.position.z > camera.position.z + 20) {
+                    cell.position.z -= 300; // Loop forwards
+                } else if (cell.position.z < camera.position.z - 300) {
+                    cell.position.z += 300; // Loop backwards
                 }
             });
 
-            // Spin the analyzer intake rings
+            // Spin the analyzer intake rings smoothly
             ringGroup.children.forEach((ring, index) => {
-                ring.rotation.z -= 0.005 * (index + 1);
+                ring.rotation.z -= 0.002 * (index + 1) * timeScale;
             });
 
-            // UI Reveal Logic based on scroll percentage segments
+            // UI Reveal Logic
             textBoxes.forEach((box, index) => {
-                const triggerPoint = index * 0.35;
+                const triggerPoint = index * 0.35; // 0, 0.35, 0.70
                 const hidePoint = triggerPoint + 0.35;
                 
                 if (scrollPercent >= triggerPoint - 0.05 && scrollPercent < hidePoint) {
